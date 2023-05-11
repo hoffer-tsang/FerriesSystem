@@ -1,0 +1,102 @@
+﻿@model Ferry.ViewModel.EmployeeCompanyViewModel
+@{
+    ViewBag.Title = "Company";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+<h2>Company View</h2>
+
+@if (Model.GeneralError == 1)
+{
+    <div> An error occur, please try again.</div>
+}
+@using (Html.BeginForm("SearchCompany", "Employee"))
+{
+    <div class="input-group mt-3">
+        @Html.AntiForgeryToken()
+        @Html.EditorFor(model => model.Search, new { htmlAttributes = new { @type = "search", @class = "form-control rounded", @placeholder = "Company Name" } })
+        @Html.ValidationMessageFor(modelItem => modelItem.Search, "", new { @class = "text-danger" })
+        <button type="submit" class="btn btn-outline-primary">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+}
+
+<button type="button" class="btn btn-light mt-3">@Html.ActionLink("New Company", "AddEditCompany", "Employee")</button>
+
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th scope="col">Company  @Html.ActionLink(" ", "SortCompany", "Employee", new { sortOrder = ViewBag.SortOrder, searchValue = ViewBag.Search }, new { @class = "fa fa-fw fa-sort" })</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.CompanyList.Count; i++)
+        {
+            <tr>
+                <td>@Model.CompanyList[i].CompanyName</td>
+                <td>@Html.ActionLink("Edit", "EditCompany", "Employee", new { id = Model.CompanyList[i].CompanyId }, null)</td>
+                <td>
+                    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="hiddenCompanyId(@Model.CompanyList[i].CompanyId)">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <li class="page-item">@Html.ActionLink("First", "PageNavigation", "Employee", new { pageNumber = 1, searchValue = ViewBag.Search, sortOrder = ViewBag.SortOrder }, new { @class = "page-link" })</li>
+            <li class="page-item">@Html.ActionLink("Previous", "PageNavigation", "Employee", new { pageNumber = ViewBag.CurrentPage - 1, searchValue = ViewBag.Search, sortOrder = ViewBag.SortOrder }, new { @class = "page-link" })</li>
+        }
+        @foreach (var item in Model.PageList)
+        {
+            <li class="page-item">@Html.ActionLink(item.ToString(), "PageNavigation", "Employee", new { pageNumber = item, searchValue = ViewBag.Search, sortOrder = ViewBag.SortOrder }, new { @class = "page-link" })</li>
+        }
+        @if (ViewBag.CurrentPage < ViewBag.MaxPageNumber)
+        {
+            <li class="page-item">@Html.ActionLink("Next", "PageNavigation", "Employee", new { pageNumber = ViewBag.CurrentPage + 1, searchValue = ViewBag.Search, sortOrder = ViewBag.SortOrder }, new { @class = "page-link" })</li>
+            <li class="page-item">@Html.ActionLink("Last", "PageNavigation", "Employee", new { pageNumber = ViewBag.MaxPageNumber, searchValue = ViewBag.Search, sortOrder = ViewBag.SortOrder }, new { @class = "page-link" })</li>
+        }
+    </ul>
+</nav>
+
+<!-- Modal -->
+@using (Html.BeginForm("DeleteCompany", "Employee"))
+{
+    @Html.AntiForgeryToken()
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Delete Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fa-sharp fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the Company?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Delete</button>
+                </div>
+                <div>
+                    @Html.HiddenFor(model => model.HiddenCompanyId, new { @id = "HiddenCompanyId" })
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function hiddenCompanyId(id) {
+        document.getElementById("HiddenCompanyId").value = id;
+    }
+</script>

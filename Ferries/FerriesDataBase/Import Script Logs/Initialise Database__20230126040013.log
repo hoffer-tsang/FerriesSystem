@@ -1,0 +1,12 @@
+26/01/2023 16:00:13	This log contains information about the import operation of the script 'Initialise Database.sql' into project 'FerriesDataBase' on computer 'TRWKS039' by user'DeveloperTraining.
+26/01/2023 16:00:13	Started importing file: C:\workspaces\hoffertsang\Main\Source\P900 Ferries\Initialise Database.sql 
+26/01/2023 16:00:13	File name C:\workspaces\hoffertsang\Main\Source\P900 Ferries\Initialise Database.sql (size: 7676)
+26/01/2023 16:00:13	Parsing import script
+26/01/2023 16:00:13	Total number of batches in script: 9
+26/01/2023 16:00:13	Total number of statements in script: 38
+26/01/2023 16:00:13	The script was successfully imported into the project.
+26/01/2023 16:00:13	Analyzing schema objects...
+26/01/2023 16:00:13	Scanning project for duplicate elements
+26/01/2023 16:00:13	Finished duplicate element processing
+26/01/2023 16:00:13	A summary of the import was saved to the following location: C:\workspaces\hoffertsang\Main\Source\P900 Ferries\Ferries\FerriesDataBase\Import Script Logs\Initialise Database__20230126040013.log
+26/01/2023 16:00:13	Click Finish to continue...

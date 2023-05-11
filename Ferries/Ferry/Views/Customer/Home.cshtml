@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+<h2 class="text-center"> Customer Home</h2>
+
+<div class="text-center">
+    <img src="~/Content/ferry.Jpg" runat="server" class="rounded img-fluid" alt="Ferry">
+</div>
+
+<div class="text-center mt-3">
+    <button type="button" class="btn btn-light"> @Html.ActionLink("Book Your Journey", "Journey", "Customer")</button>
+</div>

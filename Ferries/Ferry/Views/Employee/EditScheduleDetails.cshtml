@@ -1,0 +1,205 @@
+﻿@model Ferry.ViewModel.EmployeeScheduleDetailViewModel
+@{
+    ViewBag.Title = "EditScheduleDetails";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+
+<h2>@Model.FerryName Schedule Details</h2>
+@if (Model.GeneralError != null && Model.GeneralError == 1)
+{
+    <div> An Error Occur, please try again.</div>
+}
+@if (Model.ConcurrencyError != null && Model.ConcurrencyError == 1)
+{
+    <div> Concurrency Error has occured. Please reload the data again from Ferry Detail.</div>
+}
+@using (Html.BeginForm("SaveScheduleDetails", "Employee"))
+{
+    @Html.AntiForgeryToken()
+    <div class="mt-3">
+        @Html.LabelFor(model => model.CostPerPerson)
+        @Html.EditorFor(model => model.CostPerPerson, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.CostPerPerson, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.CostPerVehicle)
+        @Html.EditorFor(model => model.CostPerVehicle, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.CostPerVehicle, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.Description)
+        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+    </div>
+
+    <h4 class="mt-3"> First Stop</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Location</th>
+                <th scope="col">DepartureDay</th>
+                <th scope="col">DepartureTime</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Html.DropDownListFor(model => model.FirstStop.LocationId, new SelectList(Model.LocationList, "LocationId", "LocationName", Model.FirstStop.LocationId), new {@class = "form-control"})</td>
+                <td>@Html.DropDownListFor(model => model.FirstStop.DepartureDay, new SelectList(Model.DayList, "DayNumber", "DayName", Model.FirstStop.DepartureDay), new { @class = "form-control" })</td>
+                <td>
+                    @Html.EditorFor(model => model.FirstStop.DepartureTime, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FirstStop.DepartureTime, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4 class="mt-3"> Middle Stops </h4>
+    <table class="table table-striped" id="midStopTable">
+        <thead>
+            <tr>
+                <th scope="col">Location</th>
+                <th scope="col">ArrivalDay</th>
+                <th scope="col">ArrivalTime</th>
+                <th scope="col">DepartureDay</th>
+                <th scope="col">DepartureTime</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody id="stopTableBody">
+            @if (Model.StopList != null || Model.StopList.Count != 0)
+            {
+                for (int i = 0; i < Model.StopList.Count; i++)
+                {
+                    <tr>
+                        <td>@Html.DropDownListFor(model => model.StopList[i].LocationId, new SelectList(Model.LocationList, "LocationId", "LocationName", Model.StopList[i].LocationId), new { @class = "form-control" })</td>
+                        <td>@Html.DropDownListFor(model => model.StopList[i].ArrivalDay, new SelectList(Model.DayList, "DayNumber", "DayName", Model.StopList[i].ArrivalDay), new { @class = "form-control" })</td>
+                        <td>
+                            @Html.EditorFor(model => model.StopList[i].ArrivalTime, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.StopList[i].ArrivalTime, "", new { @class = "text-danger" })
+                        </td>
+                        <td>@Html.DropDownListFor(model => model.StopList[i].DepartureDay, new SelectList(Model.DayList, "DayNumber", "DayName", Model.StopList[i].DepartureDay), new { @class = "form-control" })</td>
+                        <td>
+                            @Html.EditorFor(model => model.StopList[i].DepartureTime, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.StopList[i].DepartureTime, "", new { @class = "text-danger" })
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-link" onclick="deleteRow(this)"> Delete </button>
+                            @Html.HiddenFor(model => model.StopList[i].ScheduleStopId)
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div>
+        <button type="button" class="btn btn-outline-primary" onclick="newMidRow()"> New Stop </button>
+    </div>
+
+    <h4 class="mt-3"> last Stop</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Location</th>
+                <th scope="col">ArrivalDay</th>
+                <th scope="col">ArrivalTime</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Html.DropDownListFor(model => model.LastStop.LocationId, new SelectList(Model.LocationList, "LocationId", "LocationName", Model.LastStop.LocationId), new { @class = "form-control" })</td>
+                <td>@Html.DropDownListFor(model => model.LastStop.ArrivalDay, new SelectList(Model.DayList, "DayNumber", "DayName", Model.LastStop.ArrivalDay), new { @class = "form-control" })</td>
+                <td>
+                    @Html.EditorFor(model => model.LastStop.ArrivalTime, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LastStop.ArrivalTime, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-outline-primary">@Html.ActionLink("Cancel", "FerryDetails", "Employee", new { id = Model.FerryId }, null)</button>
+    <button type="button" class="btn btn-outline-primary" onclick="sumbitForm()"> Save Changes </button>
+    <div>
+        @Html.HiddenFor(model => model.StopListLength)
+    </div>
+    <div>
+        @Html.HiddenFor(model => model.RowVersion)
+    </div>
+    <div>
+        @Html.HiddenFor(model => model.ScheduleId)
+    </div>
+    <div>
+        @Html.HiddenFor(model => model.FerryId)
+    </div>
+    <div>
+        @Html.HiddenFor(model => model.StopIdList)
+    </div>
+}
+<table hidden id="hiddenTable">
+    <tbody>
+        <tr id="hiddenTableRow">
+            <td>@Html.DropDownListFor(model => model.HiddenStopList[0].LocationId, new SelectList(Model.LocationList, "LocationId", "LocationName"), new { @class = "form-control" })</td>
+            <td>@Html.DropDownListFor(model => model.HiddenStopList[0].ArrivalDay, new SelectList(Model.DayList, "DayNumber", "DayName"), new { @class = "form-control" })</td>
+            <td>
+                @Html.EditorFor(model => model.HiddenStopList[0].ArrivalTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HiddenStopList[0].ArrivalTime, "", new { @class = "text-danger" })
+            </td>
+            <td>@Html.DropDownListFor(model => model.HiddenStopList[0].DepartureDay, new SelectList(Model.DayList, "DayNumber", "DayName"), new { @class = "form-control" })</td>
+            <td>
+                @Html.EditorFor(model => model.HiddenStopList[0].DepartureTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HiddenStopList[0].DepartureTime, "", new { @class = "text-danger" })
+            </td>
+            <td>
+                <button type="button" class="btn btn-link" onclick="deleteRow(this)"> Delete </button>
+                @Html.HiddenFor(model => model.HiddenStopList[0].ScheduleStopId)
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    function newMidRow() {
+        var body = document.getElementById("stopTableBody");
+        var rows = document.getElementById("hiddenTableRow");
+        var length = document.getElementById("StopListLength").value;
+        document.getElementById("StopListLength").value = parseInt(length) + 1;
+        var newRow = rows.cloneNode(true);
+        newRow.id = "newHiddenRowAdd";
+        newRow.children[0].children[0].id = 'StopList_' + length + '__LocationId';
+        newRow.children[1].children[0].id = 'StopList_' + length + '__ArrivalDay';
+        newRow.children[2].children[0].id = 'StopList_' + length + '__ArrivalTime';
+        newRow.children[3].children[0].id = 'StopList_' + length + '__DepartureDay';
+        newRow.children[4].children[0].id = 'StopList_' + length + '__DepartureTime';
+        newRow.children[5].children[1].id = 'StopList_' + length + '__ScheduleStopId';
+        newRow.children[0].children[0].name = 'StopList[' + length + '].LocationId';
+        newRow.children[1].children[0].name = 'StopList[' + length + '].ArrivalDay';
+        newRow.children[2].children[0].name = 'StopList[' + length + '].ArrivalTime';
+        newRow.children[3].children[0].name = 'StopList[' + length + '].DepartureDay';
+        newRow.children[4].children[0].name = 'StopList[' + length + '].DepartureTime';
+        newRow.children[5].children[1].name = 'StopList[' + length + '].ScheduleStopId';
+        newRow.children[5].children[1].value = '-1';
+        body.appendChild(newRow);
+    }
+    function deleteRow(element) {
+        var row = element.parentElement.parentElement;
+        row.remove();
+    }
+    function sumbitForm() {
+        var table = document.getElementById("midStopTable");
+        var body = table.tBodies[0];
+        var rows = Array.from(body.rows);
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].children[0].children[0].id = 'StopList_' + i + '__LocationId';
+            rows[i].children[1].children[0].id = 'StopList_' + i + '__ArrivalDay';
+            rows[i].children[2].children[0].id = 'StopList_' + i + '__ArrivalTime';
+            rows[i].children[3].children[0].id = 'StopList_' + i + '__DepartureDay';
+            rows[i].children[4].children[0].id = 'StopList_' + i + '__DepartureTime';
+            rows[i].children[5].children[1].id = 'StopList_' + i + '__ScheduleStopId';
+            rows[i].children[0].children[0].name = 'StopList[' + i + '].LocationId';
+            rows[i].children[1].children[0].name = 'StopList[' + i + '].ArrivalDay';
+            rows[i].children[2].children[0].name = 'StopList[' + i + '].ArrivalTime';
+            rows[i].children[3].children[0].name = 'StopList[' + i + '].DepartureDay';
+            rows[i].children[4].children[0].name = 'StopList[' + i + '].DepartureTime';
+            rows[i].children[5].children[1].name = 'StopList[' + i + '].ScheduleStopId';
+        }
+        document.forms[0].submit();
+    }
+</script>

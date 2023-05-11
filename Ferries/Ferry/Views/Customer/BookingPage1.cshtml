@@ -1,0 +1,120 @@
+﻿@model Ferry.ViewModel.CustomerBookingPageViewModel
+@{
+    ViewBag.Title = "BookingPage1";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<h2> Journey Details </h2>
+@using (Html.BeginForm("BookingPage1Submit", "Customer"))
+{
+    <div class="mt-3">
+        @Html.LabelFor(model => model.FerryName)
+        @Html.DisplayFor(model => model.FerryName)
+        @Html.HiddenFor(model => model.FerryName)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.CompanyName)
+        @Html.DisplayFor(model => model.CompanyName)
+        @Html.HiddenFor(model => model.CompanyName)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.DepartureLocation)
+        @Html.DisplayFor(model => model.DepartureLocation)
+        @Html.HiddenFor(model => model.DepartureLocation)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.DepartureDateTime)
+        @Html.DisplayFor(model => model.DepartureDateTime)
+        @Html.HiddenFor(model => model.DepartureDateTime)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.ArrivalLocation)
+        @Html.DisplayFor(model => model.ArrivalLocation)
+        @Html.HiddenFor(model => model.ArrivalLocation)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.ArrivalDateTime)
+        @Html.DisplayFor(model => model.ArrivalDateTime)
+        @Html.HiddenFor(model => model.ArrivalDateTime)
+    </div>
+    if(Model.Description != null)
+                {
+                    <div>
+                        @Html.LabelFor(model => model.Description)
+                        @Html.DisplayFor(model => model.Description)
+                        @Html.HiddenFor(model => model.Description)
+                    </div>
+                }
+    <h4 class="mt-3">
+        Please enter number of cars and passengers:
+    </h4>
+    <div>
+        @Html.LabelFor(model => model.Passengers)
+        @Html.EditorFor(model => model.Passengers, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Passengers, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.Cars)
+        @Html.EditorFor(model => model.Cars, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Cars, "", new { @class = "text-danger" })
+    </div>
+    <div> 
+        <span>@Html.LabelFor(model => model.TotalCost) </span>
+        <span id="TotalCost">@Html.DisplayFor(model => model.TotalCost)</span>
+    </div>
+    <div> @Html.HiddenFor(model => model.NumberOfStops)</div>
+    <div>@Html.HiddenFor(model => model.CostPerPerson)</div>
+    <div>@Html.HiddenFor(model => model.CostPerVehicle)</div>
+    <div>
+        <button type="button" , class="btn btn-outline-primary"> @Html.ActionLink("Back", "Journey", "Customer")</button>
+        <button type="submit" , class="btn btn-outline-primary"> Next</button>
+    </div>
+}
+
+<script>
+    $(function () {
+
+        $(document).on('change', '#Cars', function () { 
+            if ($(this).val() <= 3 && $(this).val() >= 0) {
+                let cars = $(this).val();
+                let costPerCar = $("#CostPerVehicle").val() * 100;
+                let passengers = $("#Passengers").val();
+                let costPerPassengers = $("#CostPerPerson").val() * 100;
+                let stops = $("#NumberOfStops").val();
+                let price = ((cars * costPerCar + passengers * costPerPassengers) * stops).toString();
+                if (price == 0) {
+                    $("#TotalCost").html("£" + "0" + "." + "00");
+                }
+                else {
+                    $("#TotalCost").html("£" + price.slice(0, -2) + "." + price.slice(-2));
+                }
+                
+            }
+            
+        });
+
+    });
+    $(function () {
+
+        $(document).on('change', '#Passengers', function () {
+            if ($(this).val() <= 10 && $(this).val() >= 1) {
+                let cars = $("#Cars").val();
+                let costPerCar = $("#CostPerVehicle").val() * 100;
+                let passengers = $(this).val();
+                let costPerPassengers = $("#CostPerPerson").val() * 100;
+                let stops = $("#NumberOfStops").val();
+                let price = ((cars * costPerCar + passengers * costPerPassengers) * stops).toString();
+                if (price == 0) {
+                    $("#TotalCost").html("£" + "0" + "." + "00");
+                }
+                else {
+                    $("#TotalCost").html("£" + price.slice(0, -2) + "." + price.slice(-2));
+                }
+            }
+        });
+
+    });
+</script>
+
+
+

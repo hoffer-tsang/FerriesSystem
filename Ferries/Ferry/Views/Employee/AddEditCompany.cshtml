@@ -1,0 +1,64 @@
+﻿@model Ferry.ViewModel.EmployeeCompanyAddEditViewModel
+@{
+    ViewBag.Title = "AddEditCompany";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+
+@if(Model.CompanyId == -1)
+            {
+                <h1> Add Company </h1>
+            }
+else
+            {
+                <h1> Edit Company </h1>
+            }
+@if (Model.StandardError != null && Model.StandardError == 1)
+            {
+                <div>
+                    An error occur. Please try again.
+                </div>
+            }
+@if (Model.ConcurrencyError != null && Model.ConcurrencyError == 1)
+            {
+                <div>
+                    Concurrency Error has occured. Please reload the data again in company page.
+                </div>
+            }
+@using (Html.BeginForm("UpdateCompany", "Employee"))
+{
+    <div>
+        <div class="mt-3">
+            @Html.AntiForgeryToken()
+            <div>
+                @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @type = "search", @class = "form-control rounded", @placeholder = "Company Name" } })
+                @Html.ValidationMessageFor(modelItem => modelItem.CompanyName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="mt-3">
+            <div class="col">
+                <button type="button" class="btn btn-outline-primary">
+                    @Html.ActionLink("cancel", "Company", "Employee")
+                </button>
+                @if (Model.CompanyId == -1)
+                {
+                    <button type="submit" class="btn btn-outline-primary">
+                        Add Company
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-outline-primary">
+                        Edit Company
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+    <div>
+        @Html.HiddenFor(model => model.CompanyId)
+    </div>
+    <div>
+        @Html.HiddenFor(model => model.RowVersion)
+    </div>
+}
+

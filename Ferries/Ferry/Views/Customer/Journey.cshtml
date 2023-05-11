@@ -1,0 +1,111 @@
+﻿@model Ferry.ViewModel.CustomerJourneyViewModel
+@{
+    ViewBag.Title = "Journey";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+
+<h2> Book your Journey</h2>
+
+@if (Model.GeneralError == 1)
+{
+    <div> An Error has occured.</div>
+}
+else if (Model.GeneralError == 2)
+{
+    <div> Arrival Before has to be after Leave After </div>
+}
+@using (Html.BeginForm("SearchJourney", "Customer"))
+{
+    <div class="mt-3">
+        @Html.LabelFor(model => model.DepartureLocation)
+        @Html.DropDownListFor(model => model.DepartureLocation, new SelectList(Model.LocationList, "LocationName", "LocationName"), new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.DepartureLocation, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.ArrivalLocation)
+        @Html.DropDownListFor(model => model.ArrivalLocation, new SelectList(Model.LocationList, "LocationName", "LocationName"), new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.ArrivalLocation, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.LeaveAfter)
+        @Html.TextBoxFor(model => model.LeaveAfter, new { @type = "Date", @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.LeaveAfter, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.ArriveBefore)
+        @Html.TextBoxFor(model => model.ArriveBefore, new { @type = "Date", @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.ArriveBefore, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.Person)
+        @Html.EditorFor(model => model.Person, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Person, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.Vehicle)
+        @Html.EditorFor(model => model.Vehicle, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Vehicle, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.MaxPrice)
+        @Html.DropDownListFor(model => model.MaxPrice, new SelectList(Model.PriceMaxList, "MaxPrice", "MaxPriceString"), new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.MaxPrice, "", new { @class = "text-danger" })
+    </div>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-outline-primary"> Search Journey </button>
+    </div>
+    <h4 class="mt-3"> Available Journey: </h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Ferry Name</th>
+                <th scope="col">Departure Location</th>
+                <th scope="col">Departure Time</th>
+                <th scope="col">Arrival Location</th>
+                <th scope="col">Arrival Time</th>
+                <th scope="col">Total Cost</th>
+                <th scope="col"> Number of Stops</th>
+                <th scope="col"> Book? </th>
+            </tr>
+        </thead>
+        <tbody id="stopTableBody">
+            @if (Model.AvailableJourney != null || Model.AvailableJourney.Count != 0)
+            {
+                for (int i = 0; i < Model.AvailableJourney.Count; i++)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(model => model.AvailableJourney[i].FerryName)</td>
+                        <td>@Html.DisplayFor(model => model.AvailableJourney[i].DepartureLocation)</td>
+                        <td>@Html.DisplayFor(model => model.AvailableJourney[i].DepartureTime)</td>
+                        <td>@Html.DisplayFor(model => model.AvailableJourney[i].ArrivalLocation)</td>
+                        <td>@Html.DisplayFor(model => model.AvailableJourney[i].ArrivalTime)</td>
+                        <td>@Html.DisplayFor(model => model.AvailableJourney[i].TotalCost)</td>
+                        <td>@Html.DisplayFor(model => model.AvailableJourney[i].NumberOfStops)</td>
+                        <td>
+                            <button type="button" class="btn btn-link"> @Html.ActionLink("Book", "Booking", "Customer", new { rowData = i, pageNumber = ViewBag.CurrentPage}, null) </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">@Html.ActionLink("First", "PageNavigation", "Customer", new { pageNumber = 1 }, new { @class = "page-link" })</li>
+                <li class="page-item">@Html.ActionLink("Previous", "PageNavigation", "Customer", new { pageNumber = ViewBag.CurrentPage - 1 }, new { @class = "page-link" })</li>
+            }
+            @foreach (var item in Model.PageList)
+            {
+                <li class="page-item">@Html.ActionLink(item.ToString(), "PageNavigation", "Customer", new { pageNumber = item }, new { @class = "page-link" })</li>
+            }
+            @if (ViewBag.CurrentPage < ViewBag.MaxPageNumber)
+            {
+                <li class="page-item">@Html.ActionLink("Next", "PageNavigation", "Customer", new { pageNumber = ViewBag.CurrentPage + 1 }, new { @class = "page-link" })</li>
+                <li class="page-item">@Html.ActionLink("Last", "PageNavigation", "Customer", new { pageNumber = ViewBag.MaxPageNumber }, new { @class = "page-link" })</li>
+            }
+        </ul>
+    </nav>
+}

@@ -1,0 +1,115 @@
+﻿@model Ferry.ViewModel.EmployeeFerryViewModel
+@{
+    ViewBag.Title = "Ferry";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+<h2>Ferry View</h2>
+
+@if (Model.GeneralError != null && Model.GeneralError == 1)
+{
+    <div> An Error Occur, please try again.</div>
+}
+@using (Html.BeginForm("SearchFerry", "Employee"))
+{
+    <div class="mt-3">
+        @Html.AntiForgeryToken()
+        <div>
+            @Html.EditorFor(model => model.FerryNameSearch, new { htmlAttributes = new { @type = "search", @class = "form-control rounded", @placeholder = "Ferry Name" } })
+            @Html.ValidationMessageFor(modelItem => modelItem.FerryNameSearch, "", new { @class = "text-danger" })
+        </div>
+        <div>
+            @Html.EditorFor(model => model.CompanyNameSearch, new { htmlAttributes = new { @type = "search", @class = "form-control rounded", @placeholder = "Company Name" } })
+            @Html.ValidationMessageFor(modelItem => modelItem.CompanyNameSearch, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="bt-3">
+        <button type="submit" class="btn btn-outline-primary mt-3">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+}
+
+<button type="button" class="btn btn-light mt-3">@Html.ActionLink("New Ferry", "AddEditFerry", "Employee")</button>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Ferry  @Html.ActionLink(" ", "SortFerry", "Employee", new { sortColumn = "FerryName", lastSortColumn = ViewBag.SortColumn, sortOrder = ViewBag.SortOrder, searchFerry = ViewBag.SearchFerry, searchCompany = ViewBag.SearchCompany }, new { @class = "fa fa-fw fa-sort" })</th>
+            <th scope="col">CompanyName @Html.ActionLink(" ", "SortFerry", "Employee", new { sortColumn = "CompanyName", lastSortColumn = ViewBag.SortColumn, sortOrder = ViewBag.SortOrder, searchFerry = ViewBag.SearchFerry, searchCompany = ViewBag.SearchCompany }, new { @class = "fa fa-fw fa-sort" })</th>
+            <th scope="col">Details</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.FerryList.Count; i++)
+        {
+            <tr>
+                <td>@Model.FerryList[i].FerryName</td>
+                <td>@Model.FerryList[i].CompanyName</td>
+                <td>@Html.ActionLink("Details", "FerryDetails", "Employee", new { id = Model.FerryList[i].FerryId }, null)</td>
+                <td>@Html.ActionLink("Edit", "EditFerry", "Employee", new { id = Model.FerryList[i].FerryId }, null)</td>
+                <td>
+                    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="hiddenCompanyId(@Model.FerryList[i].FerryId)">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <li class="page-item">@Html.ActionLink("First", "PageFerry", "Employee", new { lastSortColumn = ViewBag.SortColumn, sortOrder = ViewBag.SortOrder, searchFerry = ViewBag.SearchFerry, searchCompany = ViewBag.SearchCompany, pageNumber = 1 }, new { @class = "page-link" })</li>
+            <li class="page-item">@Html.ActionLink("Previous", "PageFerry", "Employee", new { lastSortColumn = ViewBag.SortColumn, sortOrder = ViewBag.SortOrder, searchFerry = ViewBag.SearchFerry, searchCompany = ViewBag.SearchCompany, pageNumber = ViewBag.CurrentPage - 1 }, new { @class = "page-link" })</li>
+        }
+        @foreach (var item in Model.PageList)
+        {
+            <li class="page-item">@Html.ActionLink(item.ToString(), "PageFerry", "Employee", new { lastSortColumn = ViewBag.SortColumn, sortOrder = ViewBag.SortOrder, searchFerry = ViewBag.SearchFerry, searchCompany = ViewBag.SearchCompany, pageNumber = item }, new { @class = "page-link" })</li>
+        }
+        @if (ViewBag.CurrentPage < ViewBag.MaxPageNumber)
+        {
+            <li class="page-item">@Html.ActionLink("Next", "PageFerry", "Employee", new { lastSortColumn = ViewBag.SortColumn, sortOrder = ViewBag.SortOrder, searchFerry = ViewBag.SearchFerry, searchCompany = ViewBag.SearchCompany, pageNumber = ViewBag.CurrentPage + 1 }, new { @class = "page-link" })</li>
+            <li class="page-item">@Html.ActionLink("Last", "PageFerry", "Employee", new { lastSortColumn = ViewBag.SortColumn, sortOrder = ViewBag.SortOrder, searchFerry = ViewBag.SearchFerry, searchCompany = ViewBag.SearchCompany, pageNumber = ViewBag.MaxPageNumber }, new { @class = "page-link" })</li>
+        }
+    </ul>
+</nav>
+
+<!-- Modal -->
+@using (Html.BeginForm("DeleteFerry", "Employee"))
+{
+    @Html.AntiForgeryToken()
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Delete Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fa-sharp fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the Ferry?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Delete</button>
+                </div>
+                <div>
+                    @Html.HiddenFor(model => model.HiddenFerryId, new {@id = "HiddenFerryId" })
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function hiddenCompanyId(id) {
+        document.getElementById("HiddenFerryId").value = id;
+    }
+</script>
+

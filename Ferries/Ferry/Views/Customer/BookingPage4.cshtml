@@ -1,0 +1,24 @@
+﻿@model Ferry.ViewModel.CustomerBookingPage4ViewModel
+@{
+    ViewBag.Title = "BookingPage4";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<h3 class="text-center mt-5">Booking has been confirmed</h3>
+
+@if (@Model.GeneralError == 1)
+{
+    <h1 class="text-center"> An error has occured please try again.</h1>
+}
+else
+{
+    <h1 class="text-center mt-5">
+        @Html.LabelFor(model => model.BookingReference)
+        @Html.DisplayFor(model => model.BookingReference)
+    </h1>
+}
+
+
+<div class="text-center mt-5">
+    <button type="button" , class="btn btn-outline-primary"> @Html.ActionLink("Book Another Journey", "Journey", "Customer")</button>
+</div>

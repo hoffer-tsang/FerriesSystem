@@ -1,0 +1,13 @@
+﻿CREATE TABLE	dbo.Company (
+	CompanyId							INT NOT NULL IDENTITY,
+	Name								NVARCHAR(256) NOT NULL,
+	RowVersion							ROWVERSION NOT NULL
+)
+GO
+ALTER TABLE		dbo.Company
+ADD CONSTRAINT	PK_Company
+PRIMARY KEY		(CompanyId)
+GO
+ALTER	TABLE	dbo.Company
+ADD CONSTRAINT  UQ_Name
+UNIQUE(Name)

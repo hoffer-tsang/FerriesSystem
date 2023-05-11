@@ -1,0 +1,108 @@
+﻿@model Ferry.ViewModel.CustomerBookingPageViewModel
+@{
+    ViewBag.Title = "BookingPage3";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<h2 class="text-center"> Booking Confirmation </h2>
+<h4 class="text-center mt-3">
+    Please check details below and confirm booking.
+</h4>
+    <div class="text-center">
+        @Html.LabelFor(model => model.FerryName)
+        @Html.DisplayFor(model => model.FerryName)
+        @Html.HiddenFor(model => model.FerryName)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.CompanyName)
+        @Html.DisplayFor(model => model.CompanyName)
+        @Html.HiddenFor(model => model.CompanyName)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.DepartureLocation)
+        @Html.DisplayFor(model => model.DepartureLocation)
+        @Html.HiddenFor(model => model.DepartureLocation)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.DepartureDateTime)
+        @Html.DisplayFor(model => model.DepartureDateTime)
+        @Html.HiddenFor(model => model.DepartureDateTime)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.ArrivalLocation)
+        @Html.DisplayFor(model => model.ArrivalLocation)
+        @Html.HiddenFor(model => model.ArrivalLocation)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.ArrivalDateTime)
+        @Html.DisplayFor(model => model.ArrivalDateTime)
+        @Html.HiddenFor(model => model.ArrivalDateTime)
+    </div>
+    @if (Model.Description != null)
+    {
+        <div class="text-center">
+            @Html.LabelFor(model => model.Description)
+            @Html.DisplayFor(model => model.Description)
+            @Html.HiddenFor(model => model.Description)
+        </div>
+    }
+    <div class="text-center">
+        @Html.LabelFor(model => model.Passengers)
+        @Html.DisplayFor(model => model.Passengers)
+        @Html.HiddenFor(model => model.Passengers)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.Cars)
+        @Html.DisplayFor(model => model.Cars)
+        @Html.HiddenFor(model => model.Cars)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.TotalCost)
+        @Html.DisplayFor(model => model.TotalCost)
+        @Html.HiddenFor(model => model.TotalCost)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.CustomerName)
+        @Html.DisplayFor(model => model.CustomerName)
+        @Html.HiddenFor(model => model.CustomerName)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.Address1)
+        @Html.DisplayFor(model => model.Address1)
+        @Html.HiddenFor(model => model.Address1)
+    </div>
+        @if (Model.Address2 != null)
+        {
+            <div class="text-center">
+                @Html.LabelFor(model => model.Address2)
+                @Html.DisplayFor(model => model.Address2)
+                @Html.HiddenFor(model => model.Address2)
+            </div>
+        }
+
+    <div class="text-center">
+        @Html.LabelFor(model => model.City)
+        @Html.DisplayFor(model => model.City)
+        @Html.HiddenFor(model => model.City)
+    </div>
+    <div class="text-center">
+        @Html.LabelFor(model => model.PostCode)
+        @Html.DisplayFor(model => model.PostCode)
+        @Html.HiddenFor(model => model.PostCode)
+    </div>
+
+
+    <div>@Html.HiddenFor(model => model.NumberOfStops)</div>
+    <div>@Html.HiddenFor(model => model.CostPerPerson)</div>
+    <div>@Html.HiddenFor(model => model.CostPerVehicle)</div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <button type="button" , class="btn btn-outline-primary"> @Html.ActionLink("Back", "GetBookingPage2", "Customer")</button>
+            <button type="button" , class="btn btn-outline-primary"> @Html.ActionLink("Next", "BookingPage3Submit", "Customer")</button>
+        </div>
+    </div>
+    
+
+
+
+
